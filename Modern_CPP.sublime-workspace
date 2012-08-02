@@ -1,0 +1,417 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "\n//#include <vector>\n\n// void rval_helper ()\n// {\n//     Moveable this_can_move;\n//     return this_can_move;\n// }\n\n// void rval_func ()\n// {\n//     Moveable some_object = rval_helper();\n\n//     Moveable && rref = rval_helper();\n\n//     Moveable;// m(1);\n\n//     //std::vector v;\n\n\n    \n// }\n\n//#include <iostream>\n \ntemplate <typename T, typename ... Params>\nauto multiplier (T && t, Params ... params) -> decltype(t * multiplier(params...))\n{\n    return t * multiplier(params...);\n}\n \ntemplate <typename T>\nauto multiplier (T && t) -> T\n{\n    return t;\n}\n \n// int multiplier() { return 1; }\n \nint main()\n{\n  //std::cout << multiplier(2, 3) << std::endl;\n  multiplier(2, 3);\n  multiplier(6, 7.1, 8);\n  return 0;\n}\n\nclass Distance\n{\n public:\n    constexpr Distance (long long millimeters)\n      : millis(millimeters)\n    { }\n\n private:\n    long long millis = 0;\n};\n\nconstexpr Distance operator\"\" _m (unsigned long long meters)\n{ return Distance(meters*1000); }\n\nconstexpr Distance operator\"\" _km (unsigned long long kilometers)\n{ return Distance(kilometers*1000*1000); }\n\nconstexpr Distance operator\"\" _cm (unsigned long long centimeters)\n{ return Distance(centimeters*10); }\n\nvoid literal_distances ()\n{\n    // Distance a = 10_m;\n    // Distance b = 1_km;\n    // Distance c = 1_cm;\n\n    Distance z {1};\n}\n\ntemplate <typename TyContainer, typename TyPred>\nvoid print_if (const TyContainer & container,\n               TyPred && predicate)\n{\n    for (auto thing : container)\n    {\n        if (predicate(thing))\n        {\n            //std::cout << thing << std::endl;\n        }\n    }\n}\n\nvoid printapalooza ()\n{\n    int some_ints[5] = {0, 1, 2, 3, 4};\n    print_if(some_ints, [] (int i)\n    {\n        return i%2;\n    });\n}\n\nvoid no_exceptions () noexcept(true)\n{\n	throw 1;\n}\n\nclass Base\n{\n public:\n    Base() = default;\n\n    virtual void l33t (double d) { }\n};\n\nclass DerivedDumb : public Base\n{\n public:\n    virtual void l33t (double d) { }\n};\n\nclass DerivedSmart : public Base\n{\n public:\n    virtual void l33t (double d) override { }\n};\n\n\nbool ambig (int i);\nchar* ambig (void * v);\n\n#define NULL 0\n\nvoid nothingness ()\n{\n//    int * _i = NULL;\n//    int * i  = nullptr;\n\n//    int _j = NULL;\n    //int j = nullptr; // ERROR!!!\n\n    if (ambig(0)) { }\n\n    if (ambig(NULL)) { }\n\n    if (ambig(nullptr)) { }\n    \n}\n\ntemplate <typename Ty>\nstruct is_integral\n{\n    static const bool value = false;\n};\n\ntemplate <>\nstruct is_integral<int>\n{ static const bool value = true; };\n\ntemplate <typename T>\nvoid some_integral_stuff (T && t)\n{\n    static_assert(is_integral<T>::value, \"Template param [T] is not an integral type\");\n}\n\nvoid memcpy (void *dst, void* src);\n\nstruct StuffThis\n{\n    char one;\n    char two;\n    char three;\n    char four;\n    //char five;\n};\n\nvoid my_stuff ()\n{\n	some_integral_stuff(1);\n	//some_integral_stuff(1.0);\n\n    StuffThis st;\n	char buffer[4];\n	static_assert(sizeof(StuffThis) <= sizeof(buffer), \"Uh oh, our buffer is WEAK!\");\n	memcpy(buffer, &st);\n\n}\n\nstruct IMaiar\n{\n    virtual bool shallYouPass () = 0;\n};\n\nstruct GandalfGrey : public IMaiar\n{\n    virtual bool shallYouPass () { return false; }\n};\n\nstruct GandalfWhite final : public GandalfGrey\n{\n    virtual bool shallYouPass () { return true; }\n};\n\n// struct GandalfWashedOut : public GandalfWhite\n// {\n//     virtual bool shallYouPass ()\n//     { throw \"Why bother\"; return false; }\n// };\n\nvoid unicodify ()\n{\n//    const char * iso88591 = \"Hello World!\";\n//    const wchar_t * platform_encoding = L\"hallå världen\";\n\n    // Hallo Welt\n//    const char * utf8 = u8\"\\x48\\x61\\x6C\\x6C\\x6F\"\n                        u8\"\\x20\\x57\\x65\\x6C\\x74\";\n\n    // Hello World -> Shalom Olam (but in Hebrew script)\n//    const char16_t * utf16 = u\"\\u05E9\\u05DC\\u05D5\\u05DD \\u05E2\\u05D5\\u05DC\\u05DD\";\n\n    // Hello World + some supplementary plane chars (in Simplified Chinese)\n//    const char32_t * utf32 =\n//                         U\"\\u4F60\\u597D\\u4E16\\u754C_\\U00020027\\U00020929\\U00021A3A\\U00021F6B\";\n\n}\n\nvoid raw ()\n{\n/*	const char * xhtml = R\"(\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head/> <body/>\n</html>\n)\";\n\n\n    const char * uh_oh = R\"*(\nWhat if there is a )\" in my text\n)*\";\n*/\n}\n\nclass Avenger\n{\n public:\n    Avenger () : Avenger(\"Newb\") { }\n    Avenger (const char * name) { }\n    ~Avenger ()  { }\n    Avenger (const Avenger&)  { }\n    Avenger (Avenger &&)  { }\n};\n\nAvenger getCat () { return Avenger(\"Black Panther\"); }\n\nvoid avengers_assemble ()\n{\n    Avenger cap(\"Captain America\");\n    Avenger irony = \"Iron-Man\";\n    Avenger strongest = Avenger(\"Hulk\");\n    Avenger skrull(cap);\n    Avenger cat(getCat());\n\n    //Avenger newb(); // function declaration!!!\n    Avenger newb{}; // variable declaration!!!\n\n    Avenger team[] = {cap, irony, strongest, cat, newb, \"Thor\"};\n    team[0];\n    // instead of vector::push_back!\n}\n\n//#include \"array\"\n//#include <tuple>\n//#include <type_traits>\n//#include <atomic>\n//#include <functional>\n\n\n\n\n",
+			"file": "/C/Users/Michael/Desktop/playground.cpp",
+			"file_size": 5318,
+			"file_write_time": 129882651087811147,
+			"settings":
+			{
+				"buffer_size": 5041,
+				"line_ending": "Windows",
+				"name": "void rval_helper ()"
+			}
+		},
+		{
+			"file": "/C/Users/Michael/Downloads/libcxx/include/array",
+			"settings":
+			{
+				"buffer_size": 10550,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "// -*- C++ -*-\n//===--------------------------- iosfwd -----------------------------------===//\n//\n//                     The LLVM Compiler Infrastructure\n//\n// This file is dual licensed under the MIT and the University of Illinois Open\n// Source Licenses. See LICENSE.TXT for details.\n//\n//===----------------------------------------------------------------------===//\n\n#ifndef _LIBCPP_IOSFWD\n#define _LIBCPP_IOSFWD\n\n/*\n    iosfwd synopsis\n\nnamespace std\n{\n\ntemplate<class charT> struct char_traits;\ntemplate<class T>     class allocator;\n\nclass ios_base;\ntemplate <class charT, class traits = char_traits<charT> > class basic_ios;\n\ntemplate <class charT, class traits = char_traits<charT> > class basic_streambuf;\ntemplate <class charT, class traits = char_traits<charT> > class basic_istream;\ntemplate <class charT, class traits = char_traits<charT> > class basic_ostream;\ntemplate <class charT, class traits = char_traits<charT> > class basic_iostream;\n\ntemplate <class charT, class traits = char_traits<charT>, class Allocator = allocator<charT> >\n    class basic_stringbuf;\ntemplate <class charT, class traits = char_traits<charT>, class Allocator = allocator<charT> >\n    class basic_istringstream;\ntemplate <class charT, class traits = char_traits<charT>, class Allocator = allocator<charT> >\n    class basic_ostringstream;\ntemplate <class charT, class traits = char_traits<charT>, class Allocator = allocator<charT> >\n    class basic_stringstream;\n\ntemplate <class charT, class traits = char_traits<charT> > class basic_filebuf;\ntemplate <class charT, class traits = char_traits<charT> > class basic_ifstream;\ntemplate <class charT, class traits = char_traits<charT> > class basic_ofstream;\ntemplate <class charT, class traits = char_traits<charT> > class basic_fstream;\n\ntemplate <class charT, class traits = char_traits<charT> > class istreambuf_iterator;\ntemplate <class charT, class traits = char_traits<charT> > class ostreambuf_iterator;\n\ntypedef basic_ios<char>              ios;\ntypedef basic_ios<wchar_t>           wios;\n\ntypedef basic_streambuf<char>        streambuf;\ntypedef basic_istream<char>          istream;\ntypedef basic_ostream<char>          ostream;\ntypedef basic_iostream<char>         iostream;\n\ntypedef basic_stringbuf<char>        stringbuf;\ntypedef basic_istringstream<char>    istringstream;\ntypedef basic_ostringstream<char>    ostringstream;\ntypedef basic_stringstream<char>     stringstream;\n\ntypedef basic_filebuf<char>          filebuf;\ntypedef basic_ifstream<char>         ifstream;\ntypedef basic_ofstream<char>         ofstream;\ntypedef basic_fstream<char>          fstream;\n\ntypedef basic_streambuf<wchar_t>     wstreambuf;\ntypedef basic_istream<wchar_t>       wistream;\ntypedef basic_ostream<wchar_t>       wostream;\ntypedef basic_iostream<wchar_t>      wiostream;\n\ntypedef basic_stringbuf<wchar_t>     wstringbuf;\ntypedef basic_istringstream<wchar_t> wistringstream;\ntypedef basic_ostringstream<wchar_t> wostringstream;\ntypedef basic_stringstream<wchar_t>  wstringstream;\n\ntypedef basic_filebuf<wchar_t>       wfilebuf;\ntypedef basic_ifstream<wchar_t>      wifstream;\ntypedef basic_ofstream<wchar_t>      wofstream;\ntypedef basic_fstream<wchar_t>       wfstream;\n\ntemplate <class state> class fpos;\ntypedef fpos<char_traits<char>::state_type>    streampos;\ntypedef fpos<char_traits<wchar_t>::state_type> wstreampos;\n\n}  // std\n\n*/\n\n#include <__config>\n#include <wchar.h>  // for mbstate_t\n\n#if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)\n#pragma GCC system_header\n#endif\n\n_LIBCPP_BEGIN_NAMESPACE_STD\n\nclass ios_base;\n\ntemplate<class _CharT>  struct _LIBCPP_VISIBLE char_traits;\ntemplate<class _Tp>     class _LIBCPP_VISIBLE allocator;\n\ntemplate <class _CharT, class _Traits = char_traits<_CharT> >\n    class _LIBCPP_VISIBLE basic_ios;\n\ntemplate <class _CharT, class _Traits = char_traits<_CharT> >\n    class _LIBCPP_VISIBLE basic_streambuf;\ntemplate <class _CharT, class _Traits = char_traits<_CharT> >\n    class _LIBCPP_VISIBLE basic_istream;\ntemplate <class _CharT, class _Traits = char_traits<_CharT> >\n    class _LIBCPP_VISIBLE basic_ostream;\ntemplate <class _CharT, class _Traits = char_traits<_CharT> >\n    class _LIBCPP_VISIBLE basic_iostream;\n\ntemplate <class _CharT, class _Traits = char_traits<_CharT>,\n          class _Allocator = allocator<_CharT> >\n    class _LIBCPP_VISIBLE basic_stringbuf;\ntemplate <class _CharT, class _Traits = char_traits<_CharT>,\n          class _Allocator = allocator<_CharT> >\n    class _LIBCPP_VISIBLE basic_istringstream;\ntemplate <class _CharT, class _Traits = char_traits<_CharT>,\n          class _Allocator = allocator<_CharT> >\n    class _LIBCPP_VISIBLE basic_ostringstream;\ntemplate <class _CharT, class _Traits = char_traits<_CharT>,\n          class _Allocator = allocator<_CharT> >\n    class _LIBCPP_VISIBLE basic_stringstream;\n\ntemplate <class _CharT, class _Traits = char_traits<_CharT> >\n    class _LIBCPP_VISIBLE basic_filebuf;\ntemplate <class _CharT, class _Traits = char_traits<_CharT> >\n    class _LIBCPP_VISIBLE basic_ifstream;\ntemplate <class _CharT, class _Traits = char_traits<_CharT> >\n    class _LIBCPP_VISIBLE basic_ofstream;\ntemplate <class _CharT, class _Traits = char_traits<_CharT> >\n    class _LIBCPP_VISIBLE basic_fstream;\n\ntemplate <class _CharT, class _Traits = char_traits<_CharT> >\n    class _LIBCPP_VISIBLE istreambuf_iterator;\ntemplate <class _CharT, class _Traits = char_traits<_CharT> >\n    class _LIBCPP_VISIBLE ostreambuf_iterator;\n\ntypedef basic_ios<char>              ios;\ntypedef basic_ios<wchar_t>           wios;\n\ntypedef basic_streambuf<char>        streambuf;\ntypedef basic_istream<char>          istream;\ntypedef basic_ostream<char>          ostream;\ntypedef basic_iostream<char>         iostream;\n\ntypedef basic_stringbuf<char>        stringbuf;\ntypedef basic_istringstream<char>    istringstream;\ntypedef basic_ostringstream<char>    ostringstream;\ntypedef basic_stringstream<char>     stringstream;\n\ntypedef basic_filebuf<char>          filebuf;\ntypedef basic_ifstream<char>         ifstream;\ntypedef basic_ofstream<char>         ofstream;\ntypedef basic_fstream<char>          fstream;\n\ntypedef basic_streambuf<wchar_t>     wstreambuf;\ntypedef basic_istream<wchar_t>       wistream;\ntypedef basic_ostream<wchar_t>       wostream;\ntypedef basic_iostream<wchar_t>      wiostream;\n\ntypedef basic_stringbuf<wchar_t>     wstringbuf;\ntypedef basic_istringstream<wchar_t> wistringstream;\ntypedef basic_ostringstream<wchar_t> wostringstream;\ntypedef basic_stringstream<wchar_t>  wstringstream;\n\ntypedef basic_filebuf<wchar_t>       wfilebuf;\ntypedef basic_ifstream<wchar_t>      wifstream;\ntypedef basic_ofstream<wchar_t>      wofstream;\ntypedef basic_fstream<wchar_t>       wfstream;\n\ntemplate <class _State>             class _LIBCPP_VISIBLE fpos;\ntypedef fpos<mbstate_t>    streampos;\ntypedef fpos<mbstate_t>    wstreampos;\n#ifndef _LIBCPP_HAS_NO_UNICODE_CHARS\ntypedef fpos<mbstate_t>    u16streampos;\ntypedef fpos<mbstate_t>    u32streampos;\n#endif  // _LIBCPP_HAS_NO_UNICODE_CHARS\n\ntypedef long long streamoff;        // for char_traits in <string>\n\ntemplate <class _CharT,             // for <stdexcept>\n          class _Traits = char_traits<_CharT>,\n          class _Allocator = allocator<_CharT> >\n    class _LIBCPP_VISIBLE basic_string;\ntypedef basic_string<char, char_traits<char>, allocator<char> > string;\ntypedef basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> > wstring;\n\n_LIBCPP_END_NAMESPACE_STD\n\n#endif  // _LIBCPP_IOSFWD\n",
+			"file": "/C/Users/Michael/Downloads/libcxx/include/iosfwd",
+			"file_size": 7482,
+			"file_write_time": 129882645053731874,
+			"settings":
+			{
+				"buffer_size": 7483,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "// -*- C++ -*-\n//===---------------------------- cctype ----------------------------------===//\n//\n//                     The LLVM Compiler Infrastructure\n//\n// This file is dual licensed under the MIT and the University of Illinois Open\n// Source Licenses. See LICENSE.TXT for details.\n//\n//===----------------------------------------------------------------------===//\n\n#ifndef _LIBCPP_CCTYPE\n#define _LIBCPP_CCTYPE\n\n/*\n    cctype synopsis\n\nnamespace std\n{\n\nint isalnum(int c);\nint isalpha(int c);\nint isblank(int c);  // C99\nint iscntrl(int c);\nint isdigit(int c);\nint isgraph(int c);\nint islower(int c);\nint isprint(int c);\nint ispunct(int c);\nint isspace(int c);\nint isupper(int c);\nint isxdigit(int c);\nint tolower(int c);\nint toupper(int c);\n\n}  // std\n*/\n\n#include <__config>\n#include <ctype>\n#if defined(_MSC_VER)\n#include \"support/win32/support.h\"\n#endif // _MSC_VER\n\n#if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)\n#pragma GCC system_header\n#endif\n\n_LIBCPP_BEGIN_NAMESPACE_STD\n\n#ifdef isalnum\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_isalnum(int __c) {return isalnum(__c);}\n#undef isalnum\ninline _LIBCPP_INLINE_VISIBILITY int isalnum(int __c) {return __libcpp_isalnum(__c);}\n#else  // isalnum\nusing ::isalnum;\n#endif  // isalnum\n\n#ifdef isalpha\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_isalpha(int __c) {return isalpha(__c);}\n#undef isalpha\ninline _LIBCPP_INLINE_VISIBILITY int isalpha(int __c) {return __libcpp_isalpha(__c);}\n#else  // isalpha\nusing ::isalpha;\n#endif  // isalpha\n\n#ifdef isblank\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_isblank(int __c) {return isblank(__c);}\n#undef isblank\ninline _LIBCPP_INLINE_VISIBILITY int isblank(int __c) {return __libcpp_isblank(__c);}\n#else  // isblank\nusing ::isblank;\n#endif  // isblank\n\n#ifdef iscntrl\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_iscntrl(int __c) {return iscntrl(__c);}\n#undef iscntrl\ninline _LIBCPP_INLINE_VISIBILITY int iscntrl(int __c) {return __libcpp_iscntrl(__c);}\n#else  // iscntrl\nusing ::iscntrl;\n#endif  // iscntrl\n\n#ifdef isdigit\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_isdigit(int __c) {return isdigit(__c);}\n#undef isdigit\ninline _LIBCPP_INLINE_VISIBILITY int isdigit(int __c) {return __libcpp_isdigit(__c);}\n#else  // isdigit\nusing ::isdigit;\n#endif  // isdigit\n\n#ifdef isgraph\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_isgraph(int __c) {return isgraph(__c);}\n#undef isgraph\ninline _LIBCPP_INLINE_VISIBILITY int isgraph(int __c) {return __libcpp_isgraph(__c);}\n#else  // isgraph\nusing ::isgraph;\n#endif  // isgraph\n\n#ifdef islower\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_islower(int __c) {return islower(__c);}\n#undef islower\ninline _LIBCPP_INLINE_VISIBILITY int islower(int __c) {return __libcpp_islower(__c);}\n#else  // islower\nusing ::islower;\n#endif  // islower\n\n#ifdef isprint\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_isprint(int __c) {return isprint(__c);}\n#undef isprint\ninline _LIBCPP_INLINE_VISIBILITY int isprint(int __c) {return __libcpp_isprint(__c);}\n#else  // isprint\nusing ::isprint;\n#endif  // isprint\n\n#ifdef ispunct\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_ispunct(int __c) {return ispunct(__c);}\n#undef ispunct\ninline _LIBCPP_INLINE_VISIBILITY int ispunct(int __c) {return __libcpp_ispunct(__c);}\n#else  // ispunct\nusing ::ispunct;\n#endif  // ispunct\n\n#ifdef isspace\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_isspace(int __c) {return isspace(__c);}\n#undef isspace\ninline _LIBCPP_INLINE_VISIBILITY int isspace(int __c) {return __libcpp_isspace(__c);}\n#else  // isspace\nusing ::isspace;\n#endif  // isspace\n\n#ifdef isupper\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_isupper(int __c) {return isupper(__c);}\n#undef isupper\ninline _LIBCPP_INLINE_VISIBILITY int isupper(int __c) {return __libcpp_isupper(__c);}\n#else  // isupper\nusing ::isupper;\n#endif  // isupper\n\n#ifdef isxdigit\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_isxdigit(int __c) {return isxdigit(__c);}\n#undef isxdigit\ninline _LIBCPP_INLINE_VISIBILITY int isxdigit(int __c) {return __libcpp_isxdigit(__c);}\n#else  // isxdigit\nusing ::isxdigit;\n#endif  // isxdigit\n\n#ifdef tolower\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_tolower(int __c) {return tolower(__c);}\n#undef tolower\ninline _LIBCPP_INLINE_VISIBILITY int tolower(int __c) {return __libcpp_tolower(__c);}\n#else  // tolower\nusing ::tolower;\n#endif  // tolower\n\n#ifdef toupper\ninline _LIBCPP_INLINE_VISIBILITY int __libcpp_toupper(int __c) {return toupper(__c);}\n#undef toupper\ninline _LIBCPP_INLINE_VISIBILITY int toupper(int __c) {return __libcpp_toupper(__c);}\n#else  // toupper\nusing ::toupper;\n#endif  // toupper\n\n_LIBCPP_END_NAMESPACE_STD\n\n#endif  // _LIBCPP_CCTYPE\n",
+			"file": "/C/Users/Michael/Downloads/libcxx/include/cctype",
+			"file_size": 4653,
+			"file_write_time": 129882646443533345,
+			"settings":
+			{
+				"buffer_size": 4651,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/C/Users/Michael/Downloads/libcxx/include/cwctype",
+			"settings":
+			{
+				"buffer_size": 6205,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/C/Users/Michael/Downloads/libcxx/include/support/win32/support.h",
+			"settings":
+			{
+				"buffer_size": 4409,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/C/Users/Michael/AppData/Roaming/Sublime Text 2/Packages/SublimeClang/SublimeClang.sublime-settings",
+			"settings":
+			{
+				"buffer_size": 12117,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "Packages/C++/C++.sublime-build",
+	"command_palette":
+	{
+		"height": 104.0,
+		"selected_items":
+		[
+			[
+				"Sublim",
+				"Preferences: SublimeClang Settings – Default"
+			],
+			[
+				"SublimeClang",
+				"Preferences: SublimeClang Settings – Default"
+			],
+			[
+				"Packa",
+				"Package Control: Install Package"
+			],
+			[
+				"Package",
+				"Package Control: Enable Package"
+			]
+		],
+		"width": 400.0
+	},
+	"console":
+	{
+		"height": 125.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/Michael/Downloads/libcxx/include/__functional_base"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/C/Users/Michael/Desktop/playground.cpp",
+					"settings":
+					{
+						"buffer_size": 5041,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4686,
+								4686
+							]
+						],
+						"settings":
+						{
+							"auto_name": "void rval_helper ()",
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/C/Users/Michael/Downloads/libcxx/include/array",
+					"settings":
+					{
+						"buffer_size": 10550,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3484,
+								3491
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1352.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/C/Users/Michael/Downloads/libcxx/include/iosfwd",
+					"settings":
+					{
+						"buffer_size": 7483,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3416,
+								3416
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1157.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/C/Users/Michael/Downloads/libcxx/include/cctype",
+					"settings":
+					{
+						"buffer_size": 4651,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								795,
+								795
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 270.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/C/Users/Michael/Downloads/libcxx/include/cwctype",
+					"settings":
+					{
+						"buffer_size": 6205,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1122,
+								1122
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 632.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/C/Users/Michael/Downloads/libcxx/include/support/win32/support.h",
+					"settings":
+					{
+						"buffer_size": 4409,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								619,
+								619
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/C/Users/Michael/AppData/Roaming/Sublime Text 2/Packages/SublimeClang/SublimeClang.sublime-settings",
+					"settings":
+					{
+						"buffer_size": 12117,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9931,
+								9931
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3589.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.clang":
+	{
+		"height": 144.0
+	},
+	"output.exec":
+	{
+		"height": 100.0
+	},
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true
+}
