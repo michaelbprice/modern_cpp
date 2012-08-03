@@ -1,3 +1,11 @@
+//*****************************************************************************
+//
+// Author: Michael Price
+// License: Attribution-NonCommercial-NoDerivs 3.0 Unported
+//          http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode
+//
+//*****************************************************************************
+
 constexpr double circle_area (double radius)
 { return 3.14 * radius * radius; }
 
