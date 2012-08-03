@@ -79,6 +79,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="arrays.cpp" />
+    <ClCompile Include="async_futures_promises.cpp" />
+    <ClCompile Include="atomic.cpp" />
+    <ClCompile Include="begin_and_end.cpp" />
+    <ClCompile Include="initializers.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="lambda_sort.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="standard_constexpr_examples.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="thread_io.cpp" />
+    <ClCompile Include="tuple.cpp" />
+    <ClCompile Include="unique_ptr.cpp" />
+    <ClCompile Include="vector_factory.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
