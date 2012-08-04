@@ -1,6 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
+
+# *****************************************************************************
+# 
+#  Author: Michael Price
+#  License: Attribution-NonCommercial-NoDerivs 3.0 Unported
+#           http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode
+# 
+# *****************************************************************************
+
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Modern_CPP", "Modern_CPP.vcxproj", "{C36037BF-F30D-4ED5-941B-7B9DD98E4B44}"
 EndProject
 Global
